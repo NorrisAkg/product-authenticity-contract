@@ -22,6 +22,12 @@ struct User {
     uint256 createdAt;
 }
 
+struct Validation {
+    uint id;
+    ProductStatus status;
+    address validator;
+}
+
 struct Product {
     uint id;
     string serialNumber;
@@ -35,6 +41,8 @@ struct Product {
     address owner;
     ProductStatus status;
     address[] owners;
+    uint acceptedValidationsCount;
+    uint refusedValidationsCount;
 }
 
 struct Report {

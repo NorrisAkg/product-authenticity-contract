@@ -155,6 +155,14 @@ contract UserManagement {
         _;
     }
 
+    modifier onlyValidator(address _address) {
+        require(
+            addressToUser[_address].role == UserRole.Validator,
+            "Only admin can perform this action"
+        );
+        _;
+    }
+
     // modifier onlyRegisteredUser(address _address) {
     //     require(registeredUsers[_address], "User is not registered");
     //     _;

@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 // import {console} from "forge-std/Test.sol";
 import "forge-std/console.sol";
 import "./UserManagement.sol";
-import {Product, ProductStatus} from "./../../abstract/Types.sol";
+import {Product, ProductStatus, Validation} from "./../../abstract/Types.sol";
 
 contract ProductRegistration is UserManagement {
     event ProductAdded(
@@ -49,7 +49,7 @@ contract ProductRegistration is UserManagement {
     )
         public
         checkSerialNumberExisting(_serialNumber)
-        onlyRegisteredUser(msg.sender)
+    // onlyRegisteredUser(msg.sender)
     {
         console.log("msg sender", msg.sender);
         Product memory product = Product(
@@ -63,7 +63,9 @@ contract ProductRegistration is UserManagement {
             msg.sender,
             msg.sender,
             ProductStatus.Pending,
-            new address[](0)
+            new address[](0),
+            0,
+            0
         );
 
         products.push(product);
@@ -119,7 +121,7 @@ contract ProductRegistration is UserManagement {
         );
     }
 
-    function showProduct(
+    function showProductInfos(
         uint _productId
     )
         public
@@ -134,6 +136,7 @@ contract ProductRegistration is UserManagement {
             uint _registrationDate,
             address _manufacturer,
             address _owner,
+            ProductStatus _status,
             address[] memory _owners
         )
     {
@@ -149,6 +152,7 @@ contract ProductRegistration is UserManagement {
             product.registrationDate,
             product.manufacturer,
             product.owner,
+            product.status,
             product.owners
         );
     }
@@ -177,6 +181,15 @@ contract ProductRegistration is UserManagement {
             registeredProducts[idToProduct[_productId].serialNumber],
             // registeredProducts[_productId],
             "Product doesn't exist"
+        );
+        _;
+    }
+
+    modifier notValidatedYet(uint _productId) {
+        require(
+            idToProduct[_productId].status == ProductStatus.Validated ||
+                idToProduct[_productId].status == ProductStatus.Refused,
+            "Product already validated"
         );
         _;
     }
