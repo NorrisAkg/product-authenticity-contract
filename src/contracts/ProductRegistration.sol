@@ -49,7 +49,7 @@ contract ProductRegistration is UserManagement {
     )
         public
         checkSerialNumberExisting(_serialNumber)
-    // onlyRegisteredUser(msg.sender)
+        onlyRegisteredUser(msg.sender)
     {
         console.log("msg sender", msg.sender);
         Product memory product = Product(

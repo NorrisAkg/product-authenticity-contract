@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import "./ProductRegistration.sol";
 import "./../../abstract/Types.sol";
 
-contract ProductValidationContract is ProductRegistration {
+contract ProductValidation is ProductRegistration {
     mapping(uint => Validation[]) public productValidations;
 
     function validateProduct(uint _productId) private {
@@ -46,7 +46,6 @@ contract ProductValidationContract is ProductRegistration {
 
         // Add validation
         productValidations[_productId].push(validation);
-        // product.validations.push(validation);
 
         // Increment product validations count (accepted or refused)
         _status == ProductStatus.Validated
