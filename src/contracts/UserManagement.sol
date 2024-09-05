@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {console} from "forge-std/Test.sol";
-import {User, UserRole} from "./../../abstract/Types.sol";
+import {User, UserRole} from "./../abstract/Types.sol";
 
 contract UserManagement {
     address public immutable contractOwner;

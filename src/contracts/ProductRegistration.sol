@@ -3,10 +3,18 @@ pragma solidity ^0.8.24;
 
 // import {console} from "forge-std/Test.sol";
 import "forge-std/console.sol";
-import "./UserManagement.sol";
-import {Product, ProductStatus, Validation} from "./../../abstract/Types.sol";
+import "./../interfaces/IUserManagement.sol";
+import {Product, ProductStatus, Validation} from "./../abstract/Types.sol";
 
-contract ProductRegistration is UserManagement {
+contract ProductRegistration {
+    IUserManagement userManagementContract;
+
+    constructor(address _userManagementContractAddress) {
+        userManagementContract = IUserManagement(
+            _userManagementContractAddress
+        );
+    }
+
     event ProductAdded(
         uint _id,
         string _serialNumber,
@@ -26,7 +34,8 @@ contract ProductRegistration is UserManagement {
         string _designation,
         string _description,
         string _pictureHash,
-        uint256 _price
+        uint256 _price,
+        address _owner
     );
 
     uint productCounter = 1;
@@ -35,10 +44,6 @@ contract ProductRegistration is UserManagement {
     mapping(string => bool) public registeredProducts;
     mapping(address => uint) public ownerProductsCount;
     Product[] products;
-
-    constructor() UserManagement() {
-        // Initialisation spécifique à ProductRegistration
-    }
 
     function addProduct(
         string memory _serialNumber,
@@ -87,7 +92,6 @@ contract ProductRegistration is UserManagement {
         );
 
         registeredProducts[_serialNumber] = true;
-
         productCounter++;
     }
 
@@ -117,7 +121,8 @@ contract ProductRegistration is UserManagement {
             _designation,
             _description,
             _pictureHash,
-            _price
+            _price,
+            product.owner
         );
     }
 
@@ -157,14 +162,18 @@ contract ProductRegistration is UserManagement {
         );
     }
 
-    function registerNewOwner(uint _id, address _owner) internal {
-        Product storage product = idToProduct[_id];
+    function registerNewOwner(uint _productId, address _owner) internal {
+        Product storage product = idToProduct[_productId];
         product.owners.push(_owner);
     }
 
+    // Modifiers
     modifier onlyRegisteredUser(address _address) {
         console.log("Checking user:", _address);
-        require(getUserStatus(_address), "User is not registered");
+        require(
+            userManagementContract.getUserStatus(_address),
+            "User is not registered"
+        );
         _;
     }
 
@@ -179,7 +188,6 @@ contract ProductRegistration is UserManagement {
     modifier checkProductExisting(uint _productId) {
         require(
             registeredProducts[idToProduct[_productId].serialNumber],
-            // registeredProducts[_productId],
             "Product doesn't exist"
         );
         _;

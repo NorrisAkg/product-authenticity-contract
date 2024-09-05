@@ -39,4 +39,12 @@ interface IProductRegistration {
             ProductStatus _status,
             address[] memory _owners
         );
+
+    modifier checkProductExisting(uint _productId) {
+        require(
+            registeredProducts[idToProduct[_productId].serialNumber],
+            "Product doesn't exist"
+        );
+        _;
+    }
 }

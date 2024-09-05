@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 import "./../interfaces/IUserManagement.sol";
 import "./../interfaces/IProductRegistration.sol";
 import "./../interfaces/IProductValidation.sol";
+import "forge-std/console.sol";
 
 contract ProductAuthenticityContract {
     IUserManagement userManagementContract;
@@ -75,5 +76,12 @@ contract ProductAuthenticityContract {
             _pictureHash,
             _price
         );
+    }
+
+    // Modifiers
+    modifier onlyRegisteredUser(address _address) {
+        console.log("Checking user:", _address);
+        require(getUserStatus(_address), "User is not registered");
+        _;
     }
 }

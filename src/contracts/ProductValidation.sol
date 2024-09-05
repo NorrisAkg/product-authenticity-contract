@@ -1,16 +1,27 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import "./ProductRegistration.sol";
-import "./../../abstract/Types.sol";
+import "./../interfaces/IProductRegistration.sol";
+import "./../interfaces/IUserManagement.sol";
+import {ProductStatus} from "./../abstract/Types.sol";
 
-contract ProductValidation is ProductRegistration {
+contract ProductValidation {
+    IProductRegistration productRegistrationContract;
+    IUserManagement userManagementContract;
+
+    constructor(address _productRegistrationContractAddress, address _userManagementContractAddress) {
+        productRegistrationContract = IProductRegistration(
+            _productRegistrationContractAddress
+        )
+        userManagementContract = IUserManagement(_userManagementContractAddress);
+    }
+
     mapping(uint => Validation[]) public productValidations;
 
     function validateProduct(uint _productId) private {
         Product storage product = idToProduct[_productId];
         // Get validators count
-        uint validatorsCount = getValidators().length;
+        uint validatorsCount = userManagementContract.getValidators().length;
 
         uint acceptedValidationsPercentage = (product.acceptedValidationsCount *
             100) / validatorsCount;
@@ -31,7 +42,7 @@ contract ProductValidation is ProductRegistration {
         ProductStatus _status
     )
         public
-        checkProductExisting(_productId)
+        productRegistrationContract.checkProductExisting(_productId)
         onlyValidator(msg.sender)
         notGaveValidationYet(_productId, msg.sender)
     {
@@ -59,7 +70,7 @@ contract ProductValidation is ProductRegistration {
     function getProductStatus(
         uint _productId
     ) public view onlyValidator(msg.sender) returns (ProductStatus) {
-        (, , , , , , , , , ProductStatus _status, ) = showProductInfos(
+        (, , , , , , , , , ProductStatus _status, ) = productRegistrationContract.showProductInfos(
             _productId
         );
 
