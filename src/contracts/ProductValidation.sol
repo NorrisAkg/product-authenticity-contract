@@ -2,32 +2,22 @@
 pragma solidity ^0.8.24;
 
 import "./../interfaces/IProductRegistration.sol";
-import "./../interfaces/IUserManagement.sol";
-import {ProductStatus} from "./../abstract/Types.sol";
+import "./../abstract/BaseProductContract.sol";
+import {ProductStatus, Validation} from "./../abstract/Types.sol";
 
-contract ProductValidation {
-    IProductRegistration productRegistrationContract;
-    IUserManagement userManagementContract;
-
-    constructor(address _productRegistrationContractAddress, address _userManagementContractAddress) {
-        productRegistrationContract = IProductRegistration(
-            _productRegistrationContractAddress
-        )
-        userManagementContract = IUserManagement(_userManagementContractAddress);
-    }
-
+contract ProductValidation is BaseProductContract {
     mapping(uint => Validation[]) public productValidations;
 
-    function validateProduct(uint _productId) private {
+    function validateProduct(uint _productId, uint _validatorsCount) private {
         Product storage product = idToProduct[_productId];
         // Get validators count
-        uint validatorsCount = userManagementContract.getValidators().length;
+        // uint validatorsCount = userManagementContract.getValidators().length;
 
         uint acceptedValidationsPercentage = (product.acceptedValidationsCount *
-            100) / validatorsCount;
+            100) / _validatorsCount;
 
         uint refusedValidationsPercentage = (product.refusedValidationsCount *
-            100) / validatorsCount;
+            100) / _validatorsCount;
 
         if (acceptedValidationsPercentage > 50) {
             product.status = ProductStatus.Validated;
@@ -39,11 +29,11 @@ contract ProductValidation {
     // Add new validation by validator
     function addValidationToProduct(
         uint _productId,
-        ProductStatus _status
+        ProductStatus _status,
+        uint _validatorsCount
     )
         public
-        productRegistrationContract.checkProductExisting(_productId)
-        onlyValidator(msg.sender)
+        checkProductExisting(_productId)
         notGaveValidationYet(_productId, msg.sender)
     {
         Product storage product = idToProduct[_productId];
@@ -64,13 +54,13 @@ contract ProductValidation {
             : product.refusedValidationsCount++;
 
         // Set product validation status
-        validateProduct(_productId);
+        validateProduct(_productId, _validatorsCount);
     }
 
     function getProductStatus(
         uint _productId
-    ) public view onlyValidator(msg.sender) returns (ProductStatus) {
-        (, , , , , , , , , ProductStatus _status, ) = productRegistrationContract.showProductInfos(
+    ) public view returns (ProductStatus) {
+        (, , , , , , , , , ProductStatus _status, ) = showProductInfos(
             _productId
         );
 

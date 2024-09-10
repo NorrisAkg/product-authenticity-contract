@@ -30,6 +30,7 @@ contract ProductAuthenticityContract {
         string memory _username,
         string memory _avatar
     ) public {
+        console.log("Trying to register user");
         userManagementContract.registerUser(_username, _avatar);
     }
 
@@ -49,8 +50,18 @@ contract ProductAuthenticityContract {
         userManagementContract.addValidator(_address, _username, _avatar);
     }
 
-    function showUserInfos(address _address) public view {
-        userManagementContract.showUserInfos(_address);
+    function showUserInfos(
+        address _address
+    )
+        public
+        view
+        returns (address, string memory, string memory, UserRole role)
+    {
+        require(
+            !userManagementContract.checkIfUserIsRegistered(_address),
+            "User is not registered"
+        );
+        return userManagementContract.showUserInfos(_address);
     }
 
     function getAdmins() public view {
@@ -69,6 +80,11 @@ contract ProductAuthenticityContract {
         string memory _pictureHash,
         uint _price
     ) public {
+        require(
+            userManagementContract.checkIfUserIsRegistered(msg.sender),
+            "User is not registered"
+        );
+
         productRegistrationContract.addProduct(
             _serialNumber,
             _designation,
@@ -78,10 +94,19 @@ contract ProductAuthenticityContract {
         );
     }
 
-    // Modifiers
-    modifier onlyRegisteredUser(address _address) {
-        console.log("Checking user:", _address);
-        require(getUserStatus(_address), "User is not registered");
-        _;
+    function addValidation(uint _productId, ProductStatus _status) public {
+        require(
+            userManagementContract.getUserRole(msg.sender) ==
+                UserRole.Validator,
+            "Only validators can add validations"
+        );
+
+        productValidationContract.addValidationToProduct(
+            _productId,
+            _status,
+            userManagementContract.getValidators().length
+        );
     }
+
+    // Modifiers
 }

@@ -91,12 +91,14 @@ contract UserManagement {
     )
         public
         view
-        userIsRegistered(_address)
         returns (address, string memory, string memory, UserRole role)
     {
         User storage user = addressToUser[_address];
-
         return (_address, user.username, user.avatar, user.role);
+    }
+
+    function getUserRole(address _address) public view returns (UserRole) {
+        return addressToUser[_address].role;
     }
 
     function getAdmins() public view returns (address[] memory) {
@@ -107,7 +109,9 @@ contract UserManagement {
         return validators;
     }
 
-    function getUserStatus(address _address) public view returns (bool) {
+    function checkIfUserIsRegistered(
+        address _address
+    ) public view returns (bool) {
         return registeredUsers[_address];
     }
 
@@ -162,9 +166,4 @@ contract UserManagement {
         );
         _;
     }
-
-    // modifier onlyRegisteredUser(address _address) {
-    //     require(registeredUsers[_address], "User is not registered");
-    //     _;
-    // }
 }

@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import {ProductStatus} from "./../../abstract/Types.sol";
+import {ProductStatus} from "./../abstract/Types.sol";
 
 interface IProductValidation {
     function addValidationToProduct(
         uint _productId,
-        ProductStatus _status
+        ProductStatus _status,
+        uint _validatorsCount
     ) external;
 
     function getProductStatus(

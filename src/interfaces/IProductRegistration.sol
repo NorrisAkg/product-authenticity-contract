@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import {ProductStatus} from "./../../abstract/Types.sol";
+import {ProductStatus} from "./../abstract/Types.sol";
 
 interface IProductRegistration {
     function addProduct(
@@ -39,12 +39,4 @@ interface IProductRegistration {
             ProductStatus _status,
             address[] memory _owners
         );
-
-    modifier checkProductExisting(uint _productId) {
-        require(
-            registeredProducts[idToProduct[_productId].serialNumber],
-            "Product doesn't exist"
-        );
-        _;
-    }
 }

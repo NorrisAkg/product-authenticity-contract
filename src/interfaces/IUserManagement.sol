@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import {UserRole} from "./../../abstract/Types.sol";
+import {UserRole} from "./../abstract/Types.sol";
 
 interface IUserManagement {
     function registerUser(
@@ -32,5 +32,9 @@ interface IUserManagement {
 
     function getValidators() external view returns (address[] memory);
 
-    function getUserStatus(address _address) external view returns (bool);
+    function checkIfUserIsRegistered(
+        address _address
+    ) external view returns (bool);
+
+    function getUserRole(address _address) external view returns (UserRole);
 }

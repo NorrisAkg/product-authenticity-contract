@@ -27,8 +27,25 @@ contract ProductAuthenticityContractTest is Test {
     }
 
     function test_RegisterUser() public {
-        productAuthenticityContract.registerUser("JohnDoe", "avatarHash");
+        address _address = 0x30B83DcDdD90c73884D46fd27313EeFc665bdc25;
+        vm.prank(_address);
+        productAuthenticityContract.registerUser("John Doe", "avatarHash");
+
+        (
+            address returnedAddress,
+            string memory returnedUsername,
+            string memory returnedAvatar,
+            UserRole returnedRole
+        ) = productAuthenticityContract.showUserInfos(_address);
 
         // Assertions ou vérifications sur ce qui devrait se passer
+        assertEq(returnedAddress, (_address), "Address should match");
+        assertEq(returnedUsername, "John Doe", "Username should match");
+        assertEq(returnedAvatar, "avatarHash", "Avatar should match");
+        assertEq(
+            uint8(returnedRole),
+            uint8(UserRole.User),
+            "Role should match"
+        );
     }
 }
