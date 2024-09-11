@@ -31,7 +31,8 @@ contract ProductAuthenticityContract {
         string memory _avatar
     ) public {
         console.log("Trying to register user");
-        userManagementContract.registerUser(_username, _avatar);
+        userManagementContract.registerUser(msg.sender, _username, _avatar);
+        console.log("User registered:", _username, _avatar);
     }
 
     function addAdmin(
@@ -50,6 +51,12 @@ contract ProductAuthenticityContract {
         userManagementContract.addValidator(_address, _username, _avatar);
     }
 
+    function checkIfUserIsRegistered(
+        address _address
+    ) public view returns (bool) {
+        return userManagementContract.checkIfUserIsRegistered(_address);
+    }
+
     function showUserInfos(
         address _address
     )
@@ -57,10 +64,7 @@ contract ProductAuthenticityContract {
         view
         returns (address, string memory, string memory, UserRole role)
     {
-        require(
-            !userManagementContract.checkIfUserIsRegistered(_address),
-            "User is not registered"
-        );
+        // require(checkIfUserIsRegistered(_address), "User is not registered");
         return userManagementContract.showUserInfos(_address);
     }
 

@@ -8,7 +8,12 @@ contract UserManagement {
     address public immutable contractOwner;
 
     // Events
-    event UserRegistered(string username, string avatar, UserRole role);
+    event UserRegistered(
+        address _address,
+        string username,
+        string avatar,
+        UserRole role
+    );
     event AdminAdded();
     event ValidatorAdded();
 
@@ -29,11 +34,12 @@ contract UserManagement {
 
     // Register user
     function registerUser(
+        address _address,
         string memory _username,
         string memory _avatar
     ) public {
         // Create user
-        addressToUser[msg.sender] = User(
+        addressToUser[_address] = User(
             _username,
             _avatar,
             UserRole.User,
@@ -41,9 +47,9 @@ contract UserManagement {
         );
 
         // Set new user registered status as true
-        registeredUsers[msg.sender] = true;
+        registeredUsers[_address] = true;
 
-        emit UserRegistered(_username, _avatar, UserRole.User);
+        emit UserRegistered(_address, _username, _avatar, UserRole.User);
     }
 
     // Add new admin
@@ -94,6 +100,8 @@ contract UserManagement {
         returns (address, string memory, string memory, UserRole role)
     {
         User storage user = addressToUser[_address];
+        console.log(string.concat("user infos:", user.username, user.avatar));
+        // console.log("User infos:", user);
         return (_address, user.username, user.avatar, user.role);
     }
 

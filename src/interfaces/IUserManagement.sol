@@ -5,6 +5,7 @@ import {UserRole} from "./../abstract/Types.sol";
 
 interface IUserManagement {
     function registerUser(
+        address _address,
         string memory _username,
         string memory _avatar
     ) external;

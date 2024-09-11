@@ -106,7 +106,7 @@ contract UserManagementTest is Test {
         string
             memory _avatar = "QmXnnyufdzAWL5CqT9RnSNgPbvCc1ALT73s6epPrRnZ1Xy";
 
-        userManagement.registerUser(_username, _avatar);
+        userManagement.registerUser(_address, _username, _avatar);
 
         (
             address returnedAddress,

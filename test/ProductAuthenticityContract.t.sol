@@ -31,6 +31,12 @@ contract ProductAuthenticityContractTest is Test {
         vm.prank(_address);
         productAuthenticityContract.registerUser("John Doe", "avatarHash");
 
+        assertEq(
+            productAuthenticityContract.checkIfUserIsRegistered(_address),
+            true,
+            "User should be registered"
+        );
+
         (
             address returnedAddress,
             string memory returnedUsername,
