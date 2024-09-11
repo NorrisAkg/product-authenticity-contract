@@ -41,6 +41,7 @@ abstract contract BaseProductContract {
     )
         public
         view
+        virtual
         returns (
             uint _id,
             string memory _serialNumber,

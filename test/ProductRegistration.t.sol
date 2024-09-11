@@ -60,14 +60,6 @@ contract ProductRegistrationTest is Test {
         // );
 
         vm.prank(_address);
-        productRegistration.addProduct(
-            serialNumber,
-            designation,
-            description,
-            pictureHash,
-            price
-        );
-
         (
             uint id,
             string memory returnedSerialNumber,

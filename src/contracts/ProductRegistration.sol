@@ -13,9 +13,9 @@ contract ProductRegistration is BaseProductContract {
         string memory _designation,
         string memory _description,
         string memory _pictureHash,
+        address _manufacturer,
         uint _price
     ) public checkSerialNumberExisting(_serialNumber) {
-        console.log("msg sender", msg.sender);
         Product memory product = Product(
             productCounter,
             _serialNumber,
@@ -24,8 +24,8 @@ contract ProductRegistration is BaseProductContract {
             _pictureHash,
             _price,
             block.timestamp,
-            msg.sender,
-            msg.sender,
+            _manufacturer,
+            _manufacturer,
             ProductStatus.Pending,
             new address[](0),
             0,
@@ -35,7 +35,7 @@ contract ProductRegistration is BaseProductContract {
         products.push(product);
         idToProduct[productCounter] = product;
 
-        registerNewOwner(productCounter, msg.sender);
+        registerNewOwner(productCounter, _manufacturer);
 
         emit ProductAdded(
             productCounter,
@@ -45,8 +45,8 @@ contract ProductRegistration is BaseProductContract {
             _pictureHash,
             _price,
             block.timestamp,
-            msg.sender,
-            msg.sender,
+            _manufacturer,
+            _manufacturer,
             ProductStatus.Pending
         );
 

@@ -9,6 +9,7 @@ interface IProductRegistration {
         string memory _designation,
         string memory _description,
         string memory _pictureHash,
+        address _manufacturer,
         uint _price
     ) external;
 
