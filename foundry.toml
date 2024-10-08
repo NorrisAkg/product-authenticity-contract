@@ -1,6 +1,16 @@
 [profile.default]
-src = "src/contracts"
-out = "out"
 libs = ["lib"]
+out = "out"
+src = "src"
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
+
+[profile.gasp]
+default_gas_limit = 1500000
+default_gas_price = 2_000_000_000
+
+[etherscan]
+api_key = {key = "${ETHERSCAN_API_KEY}"}
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

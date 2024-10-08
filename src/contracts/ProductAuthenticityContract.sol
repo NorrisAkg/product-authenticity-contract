@@ -96,6 +96,26 @@ contract ProductAuthenticityContract {
         );
     }
 
+    function updateProduct(
+        uint _productId,
+        string memory _serialNumber,
+        string memory _designation,
+        string memory _description,
+        string memory _pictureHash,
+        uint _price
+    ) public {
+        console.log("msg sender", msg.sender);
+        productRegistrationContract.updateProduct(
+            msg.sender,
+            _productId,
+            _serialNumber,
+            _designation,
+            _description,
+            _pictureHash,
+            _price
+        );
+    }
+
     function getProductInfos(
         uint _productId
     )

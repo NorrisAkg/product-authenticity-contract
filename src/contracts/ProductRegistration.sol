@@ -8,6 +8,8 @@ import "./../abstract/BaseProductContract.sol";
 import {Product, ProductStatus, Validation} from "./../abstract/Types.sol";
 
 contract ProductRegistration is BaseProductContract {
+    error ProductRegistration_InvalidSerialNumber();
+
     function addProduct(
         string memory _serialNumber,
         string memory _designation,
@@ -55,6 +57,7 @@ contract ProductRegistration is BaseProductContract {
     }
 
     function updateProduct(
+        address _msgSender,
         uint _productId,
         string memory _serialNumber,
         string memory _designation,
@@ -64,15 +67,31 @@ contract ProductRegistration is BaseProductContract {
     )
         public
         checkProductExisting(_productId)
-        checkSerialNumberExisting(_serialNumber)
-        onlyProductManufacturer(_productId, msg.sender)
+        onlyProductManufacturer(_productId, _msgSender)
     {
         Product storage product = idToProduct[_productId];
-        product.serialNumber = _serialNumber;
-        product.designation = _designation;
-        product.description = _description;
-        product.pictureHash = _pictureHash;
-        product.price = _price;
+
+        if (
+            keccak256(bytes(product.serialNumber)) !=
+            keccak256(bytes(_serialNumber)) &&
+            registeredProducts[_serialNumber]
+        ) {
+            revert ProductRegistration_InvalidSerialNumber();
+        }
+
+        product.serialNumber = bytes(_serialNumber).length > 0
+            ? _serialNumber
+            : product.serialNumber;
+        product.designation = bytes(_designation).length > 0
+            ? _designation
+            : product.designation;
+        product.description = bytes(_description).length > 0
+            ? _description
+            : product.description;
+        product.pictureHash = bytes(_serialNumber).length > 0
+            ? _pictureHash
+            : product.pictureHash;
+        product.price = _price > 0 ? _price : product.price;
 
         emit ProductUpdated(
             _productId,

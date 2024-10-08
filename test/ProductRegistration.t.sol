@@ -16,11 +16,6 @@ contract ProductRegistrationTest is Test {
 
     function test_AddProduct() public {
         address _address = 0x30B83DcDdD90c73884D46fd27313EeFc665bdc25;
-        // vm.startPrank(_address);
-        string memory _username = "Arris Coolkid";
-        string
-            memory _avatar = "QmXnnyufdzAWL5CqT9RnSNgPbvCc1ALT73s6epPrRnZ1Xy";
-
         vm.prank(_address);
         // productRegistration.registerUser(_username, _avatar);
 
@@ -39,13 +34,6 @@ contract ProductRegistrationTest is Test {
         //     uint8(UserRole.User),
         //     "Avatar should match"
         // );
-
-        string memory serialNumber = "123ABC";
-        string memory designation = "Laptop";
-        string memory description = "High-end gaming laptop";
-        string
-            memory pictureHash = "QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy";
-        uint price = 1500;
 
         // assertEq(
         //     productRegistration.getUserStatus(_address),

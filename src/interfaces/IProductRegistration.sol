@@ -14,6 +14,7 @@ interface IProductRegistration {
     ) external;
 
     function updateProduct(
+        address _msgSender,
         uint _productId,
         string memory _serialNumber,
         string memory _designation,
